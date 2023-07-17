@@ -23,13 +23,15 @@ func sendHandler(w http.ResponseWriter, req *http.Request) {
 
 	b, _ := io.ReadAll(req.Body)
 
-	f, err := os.Create("./data/msg.txt") // TODO: 自动创建目录的功能
+	fn := "./data/msg.txt"
+	// TODO: 自动创建目录
+	f, err := os.OpenFile(fn, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		fmt.Fprintf(w, "Open file error: %v\n", err)
 		return
 	}
 
-	n, err := f.Write(b)
+	n, err := f.Write(append(b, '\n'))
 	if err != nil {
 		fmt.Fprintf(w, "Write file error: %v\n", err)
 		return
